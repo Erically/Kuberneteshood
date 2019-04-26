@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      server {
+                server_name tj.172.16.20.63.nip.io ;
+
+                set $proxy_upstream_name "-";
+
+                listen 50000;
+
+                location / {
+
+                        set $namespace      "jx";
+                        proxy_next_upstream                     error timeout;
+                        proxy_next_upstream_tries               3;
+
+                        proxy_pass http://upstream_balancer;
+
+                        proxy_redirect                          off;
+                }
+        }
+
+  labels:
+    provider: fabric8
+  name: test-jenkins
+  namespace: jx
+spec:
+  rules:
+  - host: tj.172.16.20.63.nip.io
+    http:
+      paths:
+      - backend:
+          serviceName: jenkins-agent
+          servicePort: 50000
+
+ # cat nginx.conf|grep tj.172.16.20.63.nip.io -A 30 -B 15

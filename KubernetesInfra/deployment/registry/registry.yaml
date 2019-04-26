@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  labels:
+    app: registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+        - name: registry
+          image: registry:2
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+          args: [ "serve", "/etc/registry/config.yml"]
+          volumeMounts:
+            - mountPath: "/var/lib/registry"
+              name: datadir
+            - mountPath: "/etc/registry/config.yml"
+              name: config
+              subPath: config.yml
+      volumes:
+      - name: datadir
+        persistentVolumeClaim:
+          claimName: datadir-regsitry
+      - name: config
+        configMap:
+          name: config
+          defaultMode: 0777
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  config.yml: |
+    version: 0.1
+    log:
+      fields:
+        service: registry
+    storage:
+      cache:
+        blobdescriptor: inmemory
+      filesystem:
+        rootdirectory: /var/lib/registry
+    http:
+      addr: :5000
+      headers:
+        X-Content-Type-Options: [nosniff]
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+    proxy:
+          remoteurl: https://registry-1.docker.io
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor5
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  local:
+    path: /data/harbor/5/
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - 172.16.20.67
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: datadir-regsitry
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: registry
+spec:
+  type: NodePort
+  selector:
+    app: registry
+  ports:
+    - port: 80 
+      targetPort: 5000
+      nodePort: 32767

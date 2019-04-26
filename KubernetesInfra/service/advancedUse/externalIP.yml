@@ -1,0 +1,17 @@
+# 如果通过IP能够路由到一个或多个集群节点，则可以让此IP作为外部IP
+# 外部IP可以和任何类型的服务一起搭配使用
+# 通过外部IP访问服务的时候，使用的端口为服务端口，如下为80.11.12.10:80
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 9376
+  externalIPs:
+  - 80.11.12.10

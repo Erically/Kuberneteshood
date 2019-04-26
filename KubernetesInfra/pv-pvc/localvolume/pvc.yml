@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test3
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 3G
+  volumeMode: Filesystem
+  storageClassName: local-storage

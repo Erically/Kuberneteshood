@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cephfs-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  cephfs:
+    monitors:
+      - 10.68.125.76:6789
+      - 10.68.76.165:6789
+    user: admin
+    secretRef:
+      name: ceph-secret
+    readOnly: false
+  persistentVolumeReclaimPolicy: Recycle

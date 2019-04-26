@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9376
+  clusterIP: 10.0.171.239
+  # loadBalancerIP可以用户指定，可以云平台指定
+  loadBalancerIP: 78.11.24.19
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 146.148.47.155

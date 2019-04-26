@@ -1,0 +1,15 @@
+# 返回的是一个C记录，即DNS查询的时候，返回的是一个别名，CNAME
+# 完成DNS的重定向，而不是通过代理和转发完成重定向
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+  namespace: prod
+spec:
+  type: ExternalName
+  externalName: my.database.example.com
+
+# 此服务名将组成内部DNS的域名：my-service.prod.svc.cluster.local
+# 内部DNS解析之后，返回的CNAME就是这里的externalName：my.database.example.com
+# 内部app得到这个CNAME之后，继续去解析，本地DNS将无法解析，将寻找集群外部的DNS服务器，在得到解析的结果后，就能通过IP访问集群外部的服务
+# 所以ExternalName专门用于内部应用访问指定的外部服务

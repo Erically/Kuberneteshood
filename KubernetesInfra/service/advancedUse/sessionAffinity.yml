@@ -1,0 +1,8 @@
+- 高级设置
+  
+```
+根据客户端IP，设置会话亲和性，默认None
+service.spec.sessionAffinity
+根据客户端IP，设置会话亲和性的粘性时间，即最长多久时间，默认10800
+service.spec.sessionAffinityConfig.clientIP.timeoutSeconds
+```

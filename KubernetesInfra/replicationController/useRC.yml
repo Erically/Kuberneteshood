@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: busybox
+  namespace: default
+  labels:
+    k8s-app: busybox
+spec:
+  replicas: 2
+  selector:
+    k8s-app: busybox
+  template:
+    metadata:
+      labels:
+        k8s-app: busybox
+        kubernetes.io/cluster-service: "true"
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["sleep", "60000"]

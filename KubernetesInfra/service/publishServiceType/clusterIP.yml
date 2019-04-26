@@ -1,0 +1,39 @@
+# 指定selector，k8s将自动创建对应的endpoints
+# service与endpoints的名字一般是相同的
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  # 不指定的默认类型
+  type: ClusterIP
+  selector:
+    app: MyApp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9376
+
+---
+# 也可以不指定selector，这时需要自己创建对应的endpoints
+# service与endpoints的名字一般是相同的
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9376
+
+# 创建endpoint
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: my-service
+subsets:
+  - addresses:
+      - ip: 1.2.3.4
+    ports:
+      - port: 9376

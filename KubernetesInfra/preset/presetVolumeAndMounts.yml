@@ -1,0 +1,20 @@
+# 这种方法配置时区始终有效
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: allow-tz-env
+spec:
+  selector:
+    matchLabels:
+  volumeMounts:
+    - mountPath: /etc/localtime
+      name: lt-config
+    - mountPath: /etc/timezone
+      name: tz-config
+  volumes:
+    - name: lt-config
+      hostPath:
+        path: /etc/localtime
+    - name: tz-config
+      hostPath:
+        path: /etc/timezone

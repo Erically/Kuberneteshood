@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: busy-box-test3
+  namespace: default
+  labels:
+    k8s-app: busy-box-test3
+spec:
+  replicas: 2
+  selector:
+    k8s-app: busy-box-test3
+  template:
+    metadata:
+      labels:
+        k8s-app: busy-box-test3
+        kubernetes.io/cluster-service: "true"
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: busy-box-test3
+        image: busybox
+        volumeMounts:
+        - name: datadir
+          mountPath: /mnt/busy-box/fs
+        command: ["sleep", "60000"]
+      volumes:
+      - name: datadir
+        persistentVolumeClaim:
+          claimName: test3
