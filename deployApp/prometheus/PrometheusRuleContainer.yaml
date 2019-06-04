@@ -15,7 +15,7 @@ spec:
     - alert: conatiner-cpu
       annotations:
         message: 容器cpu利用率>=90%
-      expr: (sum(rate(container_cpu_usage_seconds_total{container_name!="",pod_name!=""}[1m])) by(cluster,namespace,container_name,pod_name))/(sum(container_spec_cpu_quota{container_name!="",pod_name!=""}) by(cluster,namespace,container_name,pod_name) /100000) >= 0.9
+      expr: (sum(rate(container_cpu_usage_seconds_total{container_name!="",pod_name!=""}[1m])) by(cluster,namespace,container_name,pod_name))/(sum(container_spec_cpu_quota{container_name!="",pod_name!=""}) by(cluster,namespace,container_name,pod_name) /100000)*100 >= 90
       for: 1m
       labels:
         severity: critical
