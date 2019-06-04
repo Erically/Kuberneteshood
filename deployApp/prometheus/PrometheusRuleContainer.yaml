@@ -22,7 +22,7 @@ spec:
     - alert: container-memory
       annotations:
         message: 容器内存利用率>=90%
-      expr: (container_memory_rss{image!=""}/container_spec_memory_limit_bytes{image!=""}) >= 0.9
+      expr: ((container_memory_rss{image!=""}/container_spec_memory_limit_bytes{image!=""}) *100 != +inf) >= 90
       for: 1m
       labels:
         severity: critical
