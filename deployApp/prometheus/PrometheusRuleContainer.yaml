@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: prometheus-operator
+    chart: prometheus-operator-5.10.3
+    heritage: Tiller
+    release: prometheus-operator
+  name: prometheus-container
+  namespace: p2
+spec:
+  groups:
+  - name: container
+    rules:
+    - alert: conatiner-cpu
+      annotations:
+        message: 容器cpu利用率>=90%
+      expr: (sum(rate(container_cpu_usage_seconds_total{container_name!="",pod_name!=""}[1m])) by(cluster,namespace,container_name,pod_name))/(sum(container_spec_cpu_quota{container_name!="",pod_name!=""}) by(cluster,namespace,container_name,pod_name) /100000) >= 0.9
+      for: 1m
+      labels:
+        severity: critical
+    - alert: container-memory
+      annotations:
+        message: 容器内存利用率>=90%
+      expr: (container_memory_rss{image!=""}/container_spec_memory_limit_bytes{image!=""}) >= 0.9
+      for: 1m
+      labels:
+        severity: critical
+
+# sum(rate(container_cpu_usage_seconds_total{container_name!="",pod_name!=""}[1m]) 1分钟之内，容器平均每秒使用的cpu份额，多个cpu时，容器计算量将会平均分配到每个cpu，所以计算容器某个时刻总cpu份额时，要将在每个cpu上存在的份额加起来，才是此容器此刻所使用的所有cpu资源
+# container_memory_rss rss：resident set size
