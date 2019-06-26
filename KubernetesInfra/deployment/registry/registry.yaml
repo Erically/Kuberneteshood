@@ -4,16 +4,16 @@ metadata:
   name: registry
   labels:
     app: registry
-spec:
+spec: # 说明以下为deployment的具体定义，上面的metadata也是deployment的定义
   replicas: 1
   selector: # 用于pod控制器匹配控制那些pod
     matchLabels:
       app: registry
-  template:
+  template: # 这里省略pod的apiVresion、Kind关键字，直接从metadata开始定义，而单独定义一个pod的时候必须要写，k8s也会识别这里pod的定义，并在创建deployment后，kubectl get pod xxx -n xxx -o yaml，将会发现pod的定义会是完整的，即k8s将会把这里pod的不完整定义转换成一个完整的定义
     metadata:
       labels: # 指明pod的标签
         app: registry
-    spec:
+    spec: # 说明以下为pod的具体定义，上面的metadata也是pod的定义
       containers:
         - name: registry
           image: registry:2
