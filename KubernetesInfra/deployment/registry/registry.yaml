@@ -6,12 +6,12 @@ metadata:
     app: registry
 spec:
   replicas: 1
-  selector:
+  selector: # 用于pod控制器匹配控制那些pod
     matchLabels:
       app: registry
   template:
     metadata:
-      labels:
+      labels: # 指明pod的标签
         app: registry
     spec:
       containers:
