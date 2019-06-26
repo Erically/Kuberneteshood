@@ -22,9 +22,9 @@ spec:
               protocol: TCP
           args: [ "serve", "/etc/registry/config.yml"]
           volumeMounts:
-            - mountPath: "/var/lib/registry"
+            - mountPath: "/var/lib/registry" 
               name: datadir
-            - mountPath: "/etc/registry/config.yml"
+            - mountPath: "/etc/registry/config.yml" # 通过这种方法，能够在同一个文件夹添加两个不同的文件
               name: config
               subPath: config.yml
       volumes:
