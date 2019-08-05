@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms: # 如果指定多个nodeSelectorTerms，则只要满足其中一个条件，就会被调度到相应的节点上。
+        - matchExpressions: # 如果指定多个matchExpressions，则所有的条件都必须满足才会调度到对应的节点。
+          - key: kubernetes.io/e2e-az-name
+            operator: In
+            values:
+            - e2e-az1
+            - e2e-az2
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1               # 取值范围1-100
+        preference:
+          matchExpressions:
+          - key: another-node-label-key
+            operator: In # NotIn、Exists、DoesNotExist、Gt、Lt
+            values:
+            - another-node-label-value
+  containers:
+  - name: nginx
+    image: docker.io/nginx
+
+# 注意：
+# 1.pod与node之间只有亲和性，没有反亲和性
+# 2.pod与pod之间有亲和性和反亲和性
