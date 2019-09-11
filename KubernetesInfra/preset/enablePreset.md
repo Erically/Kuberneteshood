@@ -27,7 +27,7 @@ Preset保存的是一些配置，这些配置会根据label seclector自动加�
 - 重新启动kube-apiserver
 
 ```
-# systemctl start kube-apiserver
+# systemctl restart kube-apiserver
 ```
 
 - 查看启动状态和日志
